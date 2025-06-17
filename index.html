@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Slotting Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .section {
+            margin: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .section h2 {
+            margin-bottom: 20px;
+            color: #4a5568;
+            font-size: 1.8em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .file-input {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .file-input input[type="file"] {
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .file-input input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+        
+        .download-btn:hover {
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+        }
+        
+        .error {
+            color: #e53e3e;
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #e53e3e;
+            font-weight: 500;
+        }
+        
+        .success {
+            color: #38a169;
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #38a169;
+            font-weight: 500;
+        }
+        
+        table {
+            border-collapse: collapse;
+            margin: 15px 0;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            border: none;
+            padding: 12px 15px;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 12px;
+        }
+        
+        td {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+        
+        tr:hover td {
+            background-color: #f7fafc;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .heatmap-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 1024px) {
+            .heatmap-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .heatmap {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .heatmap h3 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #4a5568;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+        
+        .heatmap table {
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .heatmap td {
+            width: 45px;
+            height: 45px;
+            font-size: 11px;
+            line-height: 1.2;
+            vertical-align: middle;
+            white-space: pre-line;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .class-A { 
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%) !important; 
+            color: white; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .class-B { 
+            background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%) !important; 
+            color: white; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .class-C { 
+            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%) !important; 
+            color: white; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .legend {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            margin: 8px 15px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .summary {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+            border-radius: 15px;
+            line-height: 1.8;
+            font-size: 16px;
+            color: #2c5282;
+            border-left: 5px solid #3182ce;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .config {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 30px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            border-left: 5px solid #f59e0b;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            color: #92400e;
+            font-weight: 500;
+        }
+        
+        .scrollable {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .scrollable::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .scrollable::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .scrollable::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+        
+        .scrollable::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        
+        .scrollable table {
+            margin: 0;
+            border-radius: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            .section {
+                margin: 15px;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+                padding: 20px;
+            }
+            
+            .file-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .file-input input[type="file"] {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Warehouse Slotting Planner</h1>
+        
+        <div class="config">
+            <strong>Configuration:</strong> 
+            Dock: Row <span id="dock-row-display"></span>, Column <span id="dock-col-display"></span> | 
+            Obstacle: Row <span id="obs-row-display"></span>, Column <span id="obs-col-display"></span>
+        </div>
+        
+        <div class="section">
+            <h2>1. File Upload</h2>
+            <div class="file-input">
+                <input type="file" id="fileInput" accept=".csv,.xlsx" />
+                <button class="button" onclick="generateSlottingPlan()">Generate Slotting Plan</button>
+            </div>
+            <div id="fileStatus"></div>
+        </div>
+        
+        <div class="section">
+            <h2>2. Annotated SKU Data</h2>
+            <div id="skuTableContainer"></div>
+            <button class="button download-btn" onclick="downloadAnnotatedCSV()" disabled id="downloadAnnotatedBtn">Download Annotated CSV</button>
+        </div>
+        
+        <div class="section">
+            <h2>3. Optimized Layout</h2>
+            <div id="layoutTableContainer"></div>
+            <button class="button download-btn" onclick="downloadLayoutCSV()" disabled id="downloadLayoutBtn">Download Layout CSV</button>
+        </div>
+        
+        <div class="section">
+            <h2>4. Visualizations</h2>
+            <div class="heatmap-container">
+                <div class="heatmap">
+                    <h3>Original Frequencies</h3>
+                    <div id="originalHeatmap"></div>
+                </div>
+                <div class="heatmap">
+                    <h3>Optimized Slotting</h3>
+                    <div id="optimizedHeatmap"></div>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <strong>Legend:</strong>
+                <div class="legend-item">
+                    <span class="legend-color class-A"></span>Class A (~20% - Highest Frequency)
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color class-B"></span>Class B (~30% - Medium Frequency)
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color class-C"></span>Class C (~50% - Lowest Frequency)
+                </div>
+                <div class="legend-item">
+                    <strong>Obstacle cells show:</strong> SKUxx<br>OBSTACLE
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>5. Summary</h2>
+            <div class="summary" id="summaryText" style="display: none;">
+                Class A SKUs (top ~20%) have been placed in the closest positions to the dock—including the obstacle slot.
+                Class B SKUs (~30%) occupy mid-range distances.
+                Class C SKUs (~50%) go to the farthest cells.
+                This layout minimizes average picker travel distance and congestion around the dock.
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        // Configuration constants
+        const CONFIG = {
+            dockRow: null,    // Will be set dynamically
+            dockCol: null,    // Will be set dynamically  
+            obsRow: null,     // Will be set dynamically
+            obsCol: null      // Will be set dynamically
+        };
+        
+        // Global variables
+        let skuData = [];
+        let layoutData = [];
+        let gridDimensions = { rows: 0, cols: 0 };
+        let originalData = [];
+        
+        // Update configuration display
+        function updateConfigDisplay() {
+            document.getElementById('dock-row-display').textContent = CONFIG.dockRow;
+            document.getElementById('dock-col-display').textContent = CONFIG.dockCol;
+            document.getElementById('obs-row-display').textContent = CONFIG.obsRow;
+            document.getElementById('obs-col-display').textContent = CONFIG.obsCol;
+        }
+        
+        function showError(message) {
+            const status = document.getElementById('fileStatus');
+            status.innerHTML = `<div class="error">${message}</div>`;
+        }
+        
+        function showSuccess(message) {
+            const status = document.getElementById('fileStatus');
+            status.innerHTML = `<div class="success">${message}</div>`;
+        }
+        
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            return lines.map(line => {
+                const result = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                result.push(current.trim());
+                return result;
+            });
+        }
+        
+        function detectDataBlock(data) {
+            if (data.length < 2) {
+                throw new Error('File must have at least 2 rows (header + data)');
+            }
+            
+            const headerRow = data[0];
+            const numCols = headerRow.length - 1; // Exclude first column (row labels)
+            const numRows = data.length - 1; // Exclude header row
+            
+            if (numCols < 1 || numRows < 1) {
+                throw new Error('Data block must be at least 1x1');
+            }
+            
+            // Extract and validate data block
+            const dataBlock = [];
+            for (let r = 1; r < data.length; r++) {
+                const row = [];
+                for (let c = 1; c < Math.min(data[r].length, headerRow.length); c++) {
+                    const cell = data[r][c];
+                    const num = parseFloat(cell);
+                    if (isNaN(num)) {
+                        throw new Error(`Non-numeric value at row ${data[r][0] || r}, col ${headerRow[c] || c}: "${cell}"`);
+                    }
+                    row.push(num);
+                }
+                dataBlock.push(row);
+            }
+            
+            return {
+                block: dataBlock,
+                rows: numRows,
+                cols: numCols,
+                rowLabels: data.slice(1).map(row => row[0] || ''),
+                colLabels: headerRow.slice(1)
+            };
+        }
+        
+        function createSKUMapping(dataBlock, rows, cols) {
+            const skus = [];
+            let skuIndex = 0;
+            
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    skus.push({
+                        SKU_ID: `SKU${skuIndex}`,
+                        Pick_Frequency: dataBlock[r][c],
+                        Original_Row: r,
+                        Original_Column: c
+                    });
+                    skuIndex++;
+                }
+            }
+            
+            return skus;
+        }
+        
+        function computeABCClasses(skus) {
+            // Sort by descending frequency
+            const sorted = [...skus].sort((a, b) => b.Pick_Frequency - a.Pick_Frequency);
+            
+            const total = sorted.reduce((sum, sku) => sum + sku.Pick_Frequency, 0);
+            let cumSum = 0;
+            
+            const totalSKUs = sorted.length;
+            const aClassCount = Math.ceil(totalSKUs * 0.20);
+            const bClassCount = Math.ceil(totalSKUs * 0.50);
+            
+            const result = sorted.map((sku, index) => {
+                const pct = (sku.Pick_Frequency / total) * 100;
+                cumSum += pct;
+                
+                let abcClass;
+                if (index < aClassCount) {
+                    abcClass = 'A';
+                } else if (index < bClassCount) {
+                    abcClass = 'B';
+                } else {
+                    abcClass = 'C';
+                }
+                
+                return {
+                    ...sku,
+                    Percentage: pct,
+                    Cumulative_Percentage: cumSum,
+                    ABC_Class: abcClass
+                };
+            });
+            
+            return result;
+        }
+        
+        function calculateDistance(r1, c1, r2, c2) {
+            return Math.abs(r1 - r2) + Math.abs(c1 - c2);
+        }
+        
+        function generateSlotting(skus, rows, cols) {
+            // Set dynamic configuration
+            CONFIG.dockRow = rows - 1;
+            CONFIG.dockCol = Math.floor(cols / 2);
+            CONFIG.obsRow = Math.floor(rows / 2);
+            CONFIG.obsCol = Math.floor(cols / 2);
+            
+            updateConfigDisplay();
+            
+            // Generate all cell positions
+            const positions = [];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const dist = calculateDistance(r, c, CONFIG.dockRow, CONFIG.dockCol);
+                    positions.push({ r, c, dist });
+                }
+            }
+            
+            // Sort positions by distance, then by row, then by column
+            positions.sort((a, b) => {
+                if (a.dist !== b.dist) return a.dist - b.dist;
+                if (a.r !== b.r) return a.r - b.r;
+                return a.c - b.c;
+            });
+            
+            // Sort SKUs by class (A, B, C)
+            const sortedSKUs = [...skus].sort((a, b) => {
+                const classOrder = { 'A': 0, 'B': 1, 'C': 2 };
+                if (classOrder[a.ABC_Class] !== classOrder[b.ABC_Class]) {
+                    return classOrder[a.ABC_Class] - classOrder[b.ABC_Class];
+                }
+                return b.Pick_Frequency - a.Pick_Frequency;
+            });
+            
+            // Create layout grid
+            const layout = Array(rows).fill(null).map(() => Array(cols).fill(null));
+            
+            // Assign SKUs to positions
+            for (let i = 0; i < sortedSKUs.length; i++) {
+                const sku = sortedSKUs[i];
+                const pos = positions[i];
+                
+                let label = sku.SKU_ID;
+                if (pos.r === CONFIG.obsRow && pos.c === CONFIG.obsCol) {
+                    label += '\nOBSTACLE';
+                }
+                
+                layout[pos.r][pos.c] = {
+                    label,
+                    sku: sku,
+                    isObstacle: pos.r === CONFIG.obsRow && pos.c === CONFIG.obsCol
+                };
+            }
+            
+            return layout;
+        }
+        
+        function renderSKUTable(skus) {
+            // Sort by frequency (highest to lowest) for display
+            const sortedByFreq = [...skus].sort((a, b) => b.Pick_Frequency - a.Pick_Frequency);
+            
+            let html = '<div class="scrollable"><table>';
+            html += '<tr><th>SKU_ID</th><th>Pick_Frequency</th><th>Percentage</th><th>Cumulative_Percentage</th><th>ABC_Class</th><th>Original_Row</th><th>Original_Column</th></tr>';
+            
+            sortedByFreq.forEach(sku => {
+                html += `<tr>
+                    <td>${sku.SKU_ID}</td>
+                    <td>${sku.Pick_Frequency}</td>
+                    <td>${sku.Percentage.toFixed(2)}%</td>
+                    <td>${sku.Cumulative_Percentage.toFixed(2)}%</td>
+                    <td>${sku.ABC_Class}</td>
+                    <td>${sku.Original_Row}</td>
+                    <td>${sku.Original_Column}</td>
+                </tr>`;
+            });
+            
+            html += '</table></div>';
+            document.getElementById('skuTableContainer').innerHTML = html;
+            document.getElementById('downloadAnnotatedBtn').disabled = false;
+        }
+        
+        function renderLayoutTable(layout) {
+            let html = '<table>';
+            
+            layout.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell ? cell.label : ''}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</table>';
+            document.getElementById('layoutTableContainer').innerHTML = html;
+            document.getElementById('downloadLayoutBtn').disabled = false;
+        }
+        
+        function getFrequencyColor(frequency, maxFreq) {
+            const intensity = frequency / maxFreq;
+            const opacity = 0.3 + (intensity * 0.7);
+            return `rgba(0, 100, 200, ${opacity})`;
+        }
+        
+        function renderHeatmaps(originalData, layout) {
+            // Original frequencies heatmap
+            const maxFreq = Math.max(...originalData.flat());
+            let originalHtml = '<table>';
+            originalData.forEach(row => {
+                originalHtml += '<tr>';
+                row.forEach(freq => {
+                    const color = getFrequencyColor(freq, maxFreq);
+                    originalHtml += `<td style="background: ${color};">${freq}</td>`;
+                });
+                originalHtml += '</tr>';
+            });
+            originalHtml += '</table>';
+            document.getElementById('originalHeatmap').innerHTML = originalHtml;
+            
+            // Optimized slotting heatmap
+            let optimizedHtml = '<table>';
+            layout.forEach(row => {
+                optimizedHtml += '<tr>';
+                row.forEach(cell => {
+                    if (cell) {
+                        const className = `class-${cell.sku.ABC_Class}`;
+                        optimizedHtml += `<td class="${className}">${cell.label}</td>`;
+                    } else {
+                        optimizedHtml += '<td></td>';
+                    }
+                });
+                optimizedHtml += '</tr>';
+            });
+            optimizedHtml += '</table>';
+            document.getElementById('optimizedHeatmap').innerHTML = optimizedHtml;
+        }
+        
+        function downloadAnnotatedCSV() {
+            if (!skuData.length) return;
+            
+            const sortedByFreq = [...skuData].sort((a, b) => b.Pick_Frequency - a.Pick_Frequency);
+            
+            let csv = 'SKU_ID,Pick_Frequency,Percentage,Cumulative_Percentage,ABC_Class,Original_Row,Original_Column\n';
+            sortedByFreq.forEach(sku => {
+                csv += `${sku.SKU_ID},${sku.Pick_Frequency},${sku.Percentage.toFixed(2)},${sku.Cumulative_Percentage.toFixed(2)},${sku.ABC_Class},${sku.Original_Row},${sku.Original_Column}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'annotated_skus.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function downloadLayoutCSV() {
+            if (!layoutData.length) return;
+            
+            let csv = '';
+            layoutData.forEach(row => {
+                const labels = row.map(cell => cell ? cell.label : '');
+                csv += labels.join(',') + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'layout.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        async function generateSlottingPlan() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showError('Please select a file first.');
+                return;
+            }
+            
+            try {
+                let data;
+                
+                if (file.name.endsWith('.csv')) {
+                    const text = await file.text();
+                    data = parseCSV(text);
+                } else if (file.name.endsWith('.xlsx')) {
+                    const buffer = await file.arrayBuffer();
+                    const workbook = XLSX.read(buffer, { type: 'buffer' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    data = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+                } else {
+                    throw new Error('Please select a .csv or .xlsx file.');
+                }
+                
+                // Detect and validate data block
+                const result = detectDataBlock(data);
+                gridDimensions = { rows: result.rows, cols: result.cols };
+                originalData = result.block;
+                
+                // Create SKU mapping
+                const skus = createSKUMapping(result.block, result.rows, result.cols);
+                
+                // Compute ABC classes
+                skuData = computeABCClasses(skus);
+                
+                // Generate slotting layout
+                layoutData = generateSlotting(skuData, result.rows, result.cols);
+                
+                // Render all components
+                renderSKUTable(skuData);
+                renderLayoutTable(layoutData);
+                renderHeatmaps(originalData, layoutData);
+                
+                // Show summary
+                document.getElementById('summaryText').style.display = 'block';
+                
+                showSuccess(`Successfully processed ${result.rows}x${result.cols} grid with ${skus.length} SKUs.`);
+                
+            } catch (error) {
+                showError(`Error: ${error.message}`);
+            }
+        }
+        
+        // Initialize configuration display
+        updateConfigDisplay();
+    </script>
+</body>
+</html>
