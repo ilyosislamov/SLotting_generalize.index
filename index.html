@@ -10,67 +10,82 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
         }
         
         .container {
-            max-width: 1500px;
+            max-width: 1600px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            padding: 40px;
+            animation: slideIn 0.8s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         h1 {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            color: #2d3748;
             text-align: center;
-            padding: 30px;
-            font-size: 2.5em;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
             font-weight: 700;
-            letter-spacing: -1px;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .section {
-            margin: 30px;
+            margin: 30px 0;
             padding: 25px;
-            background: rgba(255, 255, 255, 0.8);
+            border: none;
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 15px 15px 0 0;
         }
         
         .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
         }
         
         .section h2 {
-            margin-bottom: 20px;
-            color: #4a5568;
-            font-size: 1.8em;
+            margin-top: 0;
+            color: #2d3748;
+            font-size: 1.5rem;
             font-weight: 600;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 20px;
         }
         
         .file-input {
-            margin: 20px 0;
+            margin: 15px 0;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -78,7 +93,7 @@
         }
         
         .file-input input[type="file"] {
-            padding: 12px 20px;
+            padding: 12px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             background: white;
@@ -97,25 +112,37 @@
         .button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 12px 25px;
+            padding: 12px 24px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
+            margin: 5px;
             font-size: 14px;
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .button:hover::before {
+            left: 100%;
         }
         
         .button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-        
-        .button:active {
-            transform: translateY(0);
         }
         
         .button:disabled {
@@ -141,173 +168,183 @@
             border-radius: 10px;
             margin: 15px 0;
             border-left: 4px solid #e53e3e;
-            font-weight: 500;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
         
         .success {
-            color: #38a169;
+            color: #22543d;
             background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
             padding: 15px 20px;
             border-radius: 10px;
             margin: 15px 0;
             border-left: 4px solid #38a169;
-            font-weight: 500;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         table {
             border-collapse: collapse;
             margin: 15px 0;
             width: 100%;
-            background: white;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
         
         th, td {
-            border: none;
-            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
             text-align: center;
-            font-size: 13px;
-        }
-        
-        th {
-            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-            color: white;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 12px;
-        }
-        
-        td {
-            border-bottom: 1px solid #e2e8f0;
             transition: background-color 0.2s ease;
         }
         
-        tr:hover td {
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:hover {
             background-color: #f7fafc;
         }
         
-        tr:last-child td {
-            border-bottom: none;
-        }
-        
         .heatmap-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
             gap: 30px;
             margin: 30px 0;
-        }
-        
-        @media (max-width: 1024px) {
-            .heatmap-container {
-                grid-template-columns: 1fr;
-            }
+            flex-wrap: wrap;
         }
         
         .heatmap {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
+            flex: 1;
+            min-width: 350px;
+            background: white;
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
         
         .heatmap h3 {
-            margin-bottom: 20px;
+            margin-top: 0;
             text-align: center;
-            color: #4a5568;
-            font-size: 1.4em;
+            color: #2d3748;
+            font-size: 1.2rem;
             font-weight: 600;
+            margin-bottom: 20px;
         }
         
         .heatmap table {
+            width: 100%;
+            max-width: 500px;
             margin: 0 auto;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         
         .heatmap td {
             width: 45px;
             height: 45px;
-            font-size: 11px;
+            font-size: 10px;
             line-height: 1.2;
             vertical-align: middle;
             white-space: pre-line;
             font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .heatmap td:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
         }
         
         .class-A { 
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%) !important; 
-            color: white; 
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%) !important; 
+            color: white;
+            box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
         }
         .class-B { 
-            background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%) !important; 
-            color: white; 
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%) !important; 
+            color: white;
+            box-shadow: 0 2px 8px rgba(237, 137, 54, 0.3);
         }
         .class-C { 
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%) !important; 
-            color: white; 
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%) !important; 
+            color: white;
+            box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
         }
         
         .legend {
             margin: 30px 0;
             padding: 25px;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         .legend-item {
-            display: inline-flex;
-            align-items: center;
+            display: inline-block;
             margin: 8px 15px;
-            font-weight: 500;
-            color: #4a5568;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        
+        .legend-item:hover {
+            transform: translateY(-2px);
         }
         
         .legend-color {
-            width: 25px;
-            height: 25px;
-            margin-right: 10px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            vertical-align: middle;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .summary {
             margin: 30px 0;
             padding: 25px;
-            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+            background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
             border-radius: 15px;
             line-height: 1.8;
-            font-size: 16px;
-            color: #2c5282;
-            border-left: 5px solid #3182ce;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            color: #2a4365;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(144, 205, 244, 0.2);
         }
         
         .config {
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            background: linear-gradient(135deg, #fef5e7 0%, #fed7aa 100%);
             padding: 20px;
-            border-radius: 15px;
-            margin: 20px 30px;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            border-left: 5px solid #f59e0b;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            color: #92400e;
-            font-weight: 500;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            border-left: 4px solid #ed8936;
+            box-shadow: 0 3px 10px rgba(237, 137, 54, 0.1);
         }
         
         .scrollable {
-            max-height: 500px;
+            max-height: 450px;
             overflow-y: auto;
             border-radius: 10px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
         
         .scrollable::-webkit-scrollbar {
@@ -315,51 +352,21 @@
         }
         
         .scrollable::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+            background: #f1f5f9;
+            border-radius: 4px;
         }
         
         .scrollable::-webkit-scrollbar-thumb {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
+            border-radius: 4px;
         }
         
         .scrollable::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
         }
         
         .scrollable table {
             margin: 0;
-            border-radius: 0;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                border-radius: 15px;
-            }
-            
-            .section {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 2em;
-                padding: 20px;
-            }
-            
-            .file-input {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .file-input input[type="file"] {
-                min-width: auto;
-            }
         }
     </style>
 </head>
@@ -410,13 +417,13 @@
             <div class="legend">
                 <strong>Legend:</strong>
                 <div class="legend-item">
-                    <span class="legend-color class-A"></span>Class A (~20% - Highest Frequency)
+                    <span class="legend-color class-A"></span>Class A (0%-25% Cumulative - Highest Priority)
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color class-B"></span>Class B (~30% - Medium Frequency)
+                    <span class="legend-color class-B"></span>Class B (26%-50% Cumulative - Medium Priority)
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color class-C"></span>Class C (~50% - Lowest Frequency)
+                    <span class="legend-color class-C"></span>Class C (51%-100% Cumulative - Lowest Priority)
                 </div>
                 <div class="legend-item">
                     <strong>Obstacle cells show:</strong> SKUxx<br>OBSTACLE
@@ -427,9 +434,9 @@
         <div class="section">
             <h2>5. Summary</h2>
             <div class="summary" id="summaryText" style="display: none;">
-                Class A SKUs (top ~20%) have been placed in the closest positions to the dock—including the obstacle slot.
-                Class B SKUs (~30%) occupy mid-range distances.
-                Class C SKUs (~50%) go to the farthest cells.
+                Class A SKUs (0%-25% cumulative) have been placed in the closest positions to the dock—including the obstacle slot.
+                Class B SKUs (26%-50% cumulative) occupy mid-range distances.
+                Class C SKUs (51%-100% cumulative) go to the farthest cells.
                 This layout minimizes average picker travel distance and congestion around the dock.
             </div>
         </div>
@@ -555,18 +562,15 @@
             const total = sorted.reduce((sum, sku) => sum + sku.Pick_Frequency, 0);
             let cumSum = 0;
             
-            const totalSKUs = sorted.length;
-            const aClassCount = Math.ceil(totalSKUs * 0.20);
-            const bClassCount = Math.ceil(totalSKUs * 0.50);
-            
-            const result = sorted.map((sku, index) => {
+            const result = sorted.map((sku) => {
                 const pct = (sku.Pick_Frequency / total) * 100;
                 cumSum += pct;
                 
+                // ABC Classification based on cumulative percentage
                 let abcClass;
-                if (index < aClassCount) {
+                if (cumSum <= 25) {
                     abcClass = 'A';
-                } else if (index < bClassCount) {
+                } else if (cumSum <= 50) {
                     abcClass = 'B';
                 } else {
                     abcClass = 'C';
